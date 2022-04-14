@@ -2,32 +2,29 @@ package token
 
 type TokenType string
 
-type Token struct {
-	Type    TokenType
-	Literal string
-}
-
 const (
 	ILLEGAL = "ILLEGAL"
 	EOF     = "EOF"
 
-	// 식별자 + 리터럴
-	IDENT = "IDENT"
-	INT   = "INT"
+	// Identifiers + literals
+	IDENT = "IDENT" // add, foobar, x, y, ...
+	INT   = "INT"   // 1343456
 
-	// 연산자
+	// Operators
 	ASSIGN   = "="
 	PLUS     = "+"
 	MINUS    = "-"
 	BANG     = "!"
-	SLASH    = "/"
 	ASTERISK = "*"
-	LT       = "<"
-	GT       = ">"
-	EQ       = "=="
-	NOT_EQ   = "!="
+	SLASH    = "/"
 
-	// 구분자
+	LT = "<"
+	GT = ">"
+
+	EQ     = "=="
+	NOT_EQ = "!="
+
+	// Delimiters
 	COMMA     = ","
 	SEMICOLON = ";"
 
@@ -36,7 +33,7 @@ const (
 	LBRACE = "{"
 	RBRACE = "}"
 
-	// 키워드
+	// Keywords
 	FUNCTION = "FUNCTION"
 	LET      = "LET"
 	TRUE     = "TRUE"
@@ -46,7 +43,12 @@ const (
 	RETURN   = "RETURN"
 )
 
-var keyWords = map[string]TokenType{
+type Token struct {
+	Type    TokenType
+	Literal string
+}
+
+var keywords = map[string]TokenType{
 	"fn":     FUNCTION,
 	"let":    LET,
 	"true":   TRUE,
@@ -57,7 +59,7 @@ var keyWords = map[string]TokenType{
 }
 
 func LookupIdent(ident string) TokenType {
-	if tok, ok := keyWords[ident]; ok {
+	if tok, ok := keywords[ident]; ok {
 		return tok
 	}
 	return IDENT
