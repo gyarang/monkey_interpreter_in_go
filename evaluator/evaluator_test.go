@@ -67,6 +67,65 @@ func TestEvalBooleanExpression(t *testing.T) {
 	}
 }
 
+func TestStringLiteral(t *testing.T) {
+	input := `"Hello world!"`
+
+	evaluated := testEval(input)
+	str, ok := evaluated.(*object.String)
+	if !ok {
+		t.Fatalf("object is not String. got=%T (%+v)", evaluated, evaluated)
+	}
+
+	if str.Value != "Hello world!" {
+		t.Errorf("string has wrong value. got=%q", str.Value)
+	}
+}
+
+func TestStringConcatenation(t *testing.T) {
+	tests := []struct {
+		input    string
+		expected string
+	}{
+		{`"Hello" + " " + "World!"`, "Hello World!"},
+	}
+
+	for _, tt := range tests {
+		evaluated := testEval(tt.input)
+		str, ok := evaluated.(*object.String)
+		if !ok {
+			t.Fatalf("object is not String. got=%T (%+v)", evaluated, evaluated)
+		}
+
+		if str.Value != "Hello World!" {
+			t.Errorf("string has wrong value. got=%q", str.Value)
+		}
+	}
+}
+
+func TestStringCompare(t *testing.T) {
+	tests := []struct {
+		input    string
+		expected bool
+	}{
+		{`"Hello" == "Hello"`, true},
+		{`"Hello" == "World"`, false},
+		{`"Hello" != "World"`, true},
+		{`"Hello" != "Hello"`, false},
+	}
+
+	for _, tt := range tests {
+		evaluated := testEval(tt.input)
+		boolean, ok := evaluated.(*object.Boolean)
+		if !ok {
+			t.Fatalf("object is not Boolean. got=%T (%+v)", evaluated, evaluated)
+		}
+
+		if boolean.Value != tt.expected {
+			t.Errorf("boolean has wrong value. got=%t", boolean.Value)
+		}
+	}
+}
+
 func TestBangOperator(t *testing.T) {
 	tests := []struct {
 		input    string
@@ -208,6 +267,10 @@ if (10 > 1) {
 		{
 			"foobar",
 			"identifier not found: foobar",
+		},
+		{
+			`"Hello" - "World"`,
+			"unknown operator: STRING - STRING",
 		},
 	}
 
