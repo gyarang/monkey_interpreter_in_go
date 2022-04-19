@@ -133,7 +133,7 @@ func (l *Lexer) peekChar() byte {
 
 func (l *Lexer) readIdentifier() string {
 	position := l.position
-	for isLetter(l.ch) {
+	for isDigitOrLetter(l.ch) {
 		l.readChar()
 	}
 	return l.input[position:l.position]
@@ -164,6 +164,10 @@ func isLetter(ch byte) bool {
 
 func isDigit(ch byte) bool {
 	return '0' <= ch && ch <= '9'
+}
+
+func isDigitOrLetter(ch byte) bool {
+	return isLetter(ch) || isDigit(ch)
 }
 
 func newToken(tokenType token.TokenType, ch byte) token.Token {
